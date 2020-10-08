@@ -100,28 +100,6 @@
       "aug": true,
       "lr": 0.001,
       "balance": true
-    },
-    "v9": {
-      "model": "unet",
-      "epoch": 5,
-      "optimizer": "adam",
-      "batch_size": 1,
-      "lr": 0.01,
-      "aug": false,
-      "shuffle": true,
-      "patience": 16,
-      "balance": true
-    },
-    "v10": {
-      "model": "unet",
-      "epoch": 8,
-      "optimizer": "SGD",
-      "batch_size": 1,
-      "lr": 0.01,
-      "aug": true,
-      "shuffle": true,
-      "patience": 16,
-      "balance": true
     }
   },
   "CatSpine": {
@@ -183,46 +161,6 @@
       "aug": true,
       "shuffle": true,
       "patience": 3,
-      "balance": true
-    }
-  },
-  "ss": {
-    "default": {
-      "root": "./data/ss",
-      "n_class": 2,
-      "size": [
-        1689,
-        985
-      ],
-      "batch_size": 1,
-      "optimizer": "Adam",
-      "lr": 0.0001,
-      "epoch": 40,
-      "aug": false,
-      "shuffle": false,
-      "patience": 40,
-      "balance": false
-    },
-    "v1": {
-      "model": "segnet",
-      "epoch": 25,
-      "optimizer": "SGD",
-      "batch_size": 1,
-      "lr": 0.01,
-      "aug": false,
-      "shuffle": true,
-      "patience": 16,
-      "balance": false
-    },
-    "v2": {
-      "model": "segnet",
-      "epoch": 25,
-      "optimizer": "SGD",
-      "batch_size": 1,
-      "lr": 0.01,
-      "aug": false,
-      "shuffle": true,
-      "patience": 16,
       "balance": true
     }
   }
