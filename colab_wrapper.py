@@ -1,7 +1,11 @@
 from types import SimpleNamespace
 import json
+import os
+import glob
 
 import torch
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 from apply import apply
 from cropping import crop
@@ -127,6 +131,29 @@ def remove_version(dataset, version_num=None):
     print("Deleted version v" + str(version_num) + " of dataset " + dataset)
     return True
 
+def display_images(folder):
+    if not os.path.isdir(folder):
+        print("Image directory not found!")
+        return False
+    for image_file in glob.glob(folder + "/*.png"):
+        img = mpimg.imread(image_file)
+        plt.figure()
+        plt.title(os.path.basename(image_file))
+        plt.imshow(img)
+    return True
 
-
-
+def display_overlays(dataset, version, test_folder='test'):
+    define_config()
+    config_dict = config.config
+    try:
+        dataset_dict = config_dict[dataset]
+    except KeyError:
+        print('dataset %s does not exist' % dataset)
+        return False
+    try:
+        model = dataset_dict[version]
+    except KeyError:
+        print('version %s does not exist' % version)
+        return False
+    directory_path = dataset_dict['default']['root'] + '/' + test_folder + '/overlays/' + version + '_' + model['model']
+    return display_images(directory_path)
