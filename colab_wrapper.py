@@ -156,4 +156,49 @@ def display_overlays(dataset, version, test_folder='test'):
         print('version %s does not exist' % version)
         return False
     directory_path = dataset_dict['default']['root'] + '/' + test_folder + '/overlays/' + version + '_' + model['model']
+    if not os.path.isdir(directory_path) or len(glob.glob(directory_path + "/*.png")) == 0:
+        print("Overlays not found! Perhaps they haven't made yet?")
+        return False
     return display_images(directory_path)
+
+def display_predictions(dataset, version, test_set):
+    define_config()
+    config_dict = config.config
+    try:
+        dataset_dict = config_dict[dataset]
+    except KeyError:
+        print('dataset %s does not exist' % dataset)
+        return False
+    try:
+        model = dataset_dict[version]
+    except KeyError:
+        print('version %s does not exist' % version)
+        return False
+    directory_path = 'data/' + test_set + '_predictions/' + dataset + '_' + version + '_' + model['model']
+    if not os.path.isdir(directory_path) or len(glob.glob(directory_path + "/*.png")) == 0:
+        print("Predictions not found! Perhaps they haven't made yet?")
+        return False
+    return display_images(directory_path)
+
+def display_log(dataset, version):
+    define_config()
+    config_dict = config.config
+    try:
+        dataset_dict = config_dict[dataset]
+    except KeyError:
+        print('dataset %s does not exist' % dataset)
+        return False
+    try:
+        model = dataset_dict[version]
+    except KeyError:
+        print('version %s does not exist' % version)
+        return False
+    path = 'log/' + dataset + '_' + version + '_' + model['model'] + '.png'
+    if not os.path.isfile(path):
+        print("Log not found! Perhaps it hasn't made yet?")
+        return False
+    img = mpimg.imread(path)
+    plt.figure()
+    plt.title(os.path.basename(path))
+    plt.imshow(img)
+    return True
