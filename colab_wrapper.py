@@ -180,7 +180,7 @@ def display_predictions(dataset, version, test_set):
         return False
     return display_images(directory_path)
 
-def display_log(dataset, version):
+def display_plot(dataset, version):
     define_config()
     config_dict = config.config
     try:
@@ -193,9 +193,9 @@ def display_log(dataset, version):
     except KeyError:
         print('version %s does not exist' % version)
         return False
-    path = 'log/' + dataset + '_' + version + '_' + model['model'] + '.png'
+    path = 'plots/' + dataset + '_' + version + '_' + model['model'] + '.png'
     if not os.path.isfile(path):
-        print("Log not found! Perhaps it hasn't made yet?")
+        print("Plot not found! Perhaps it hasn't made yet?")
         return False
     img = mpimg.imread(path)
     plt.figure()
