@@ -52,6 +52,7 @@ def warn_batch_size(size):
     return True
 
 def add_dataset(dataset, n_class, size, batch_size=1, lr=1e-4, epoch=40):
+    define_config()
     config_dict = config.config
     config_dict[dataset] = {'default': config.gen_default(dataset, n_class, size, batch_size, lr, epoch)}
     if not warn_batch_size(batch_size):
