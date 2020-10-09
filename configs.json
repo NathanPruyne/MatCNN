@@ -42,7 +42,7 @@
       "lr": 0.01
     }
   },
-  "tomography": {
+  "tomography_example": {
     "default": {
       "root": "./data/tomography",
       "n_class": 2,
@@ -88,7 +88,7 @@
       "lr": 0.01,
       "balance": true
     },
-    "v7": {
+    "ex1": {
       "model": "unet",
       "epoch": 4,
       "lr": 0.001,

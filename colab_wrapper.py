@@ -1,6 +1,8 @@
 from types import SimpleNamespace
 import json
 
+import torch
+
 from apply import apply
 from cropping import crop
 import image2npy
@@ -17,11 +19,13 @@ def save_config(config_obj):
         json.dump(config_obj, fp, indent=2)
 
 def run_main(dataset, mode, version, save=False, gpu=False, test_folder="test", overlay=False):
+    torch.cuda.empty_cache()
     args = SimpleNamespace(dataset=dataset, mode=mode, version=version, save=save, gpu=gpu, test_folder=test_folder, overlay=overlay)
     define_config()
     main(args)
 
 def run_apply(dataset, version, test_set, gpu=False):
+    torch.cuda.empty_cache()
     args = SimpleNamespace(dataset=dataset, version=version, test_set=test_set, gpu=gpu)
     define_config()
     apply(args)
