@@ -14,6 +14,9 @@ from main import main
 import config
 from models import model_mappings
 
+import plotly.express as px
+import plotly.graph_objects as go
+
 def define_config():
     with open('configs.json') as fp:
         config.config = json.load(fp)
@@ -132,18 +135,54 @@ def remove_version(dataset, version_num=None):
     print("Deleted version v" + str(version_num) + " of dataset " + dataset)
     return True
 
-def display_images(folder):
+def display_images(folder, disp_all):
     if not os.path.isdir(folder):
         print("Image directory not found!")
         return False
-    for image_file in glob.glob(folder + "/*.png"):
+    imgs = glob.glob(folder + "/*.png")
+    figs = []
+    for image_file in imgs:
         img = mpimg.imread(image_file)
-        plt.figure()
-        plt.title(os.path.basename(image_file))
-        plt.imshow(img)
+        figs.append(px.imshow(img, title=os.path.basename(image_file)))
+    if disp_all:
+        for fig in figs:
+          fig.show()
+    else:
+        full = go.Figure()
+        for fig in figs:
+            trace = fig.data[0]
+            trace.visible = False
+            full.add_trace(trace)
+        
+        full.data[0].visible = True
+        full.update_layout(title=go.layout.Title(text=os.path.basename(imgs[0])))
+        
+        steps = []
+
+        for i in range(len(full.data)):
+            image_name = os.path.basename(imgs[i])
+            step = dict(
+                method='update',
+                args=[{"visible": [False] * len(full.data)},
+                      {"title": image_name}],
+                label=image_name
+            )
+            step["args"][0]["visible"][i] = True
+            steps.append(step)
+        
+        sliders = [dict(
+            active=0,
+            currentvalue={'visible': False},
+            steps=steps
+        )]
+
+        full.update_layout(sliders=sliders)
+
+        full.show()
+
     return True
 
-def display_overlays(dataset, version, test_folder='test'):
+def display_overlays(dataset, version, test_folder='test', disp_all=False):
     define_config()
     config_dict = config.config
     try:
@@ -160,9 +199,9 @@ def display_overlays(dataset, version, test_folder='test'):
     if not os.path.isdir(directory_path) or len(glob.glob(directory_path + "/*.png")) == 0:
         print("Overlays not found! Perhaps they haven't made yet?")
         return False
-    return display_images(directory_path)
+    return display_images(directory_path, disp_all)
 
-def display_predictions(dataset, version, test_set):
+def display_predictions(dataset, version, test_set, disp_all=False):
     define_config()
     config_dict = config.config
     try:
@@ -179,7 +218,7 @@ def display_predictions(dataset, version, test_set):
     if not os.path.isdir(directory_path) or len(glob.glob(directory_path + "/*.png")) == 0:
         print("Predictions not found! Perhaps they haven't made yet?")
         return False
-    return display_images(directory_path)
+    return display_images(directory_path, disp_all)
 
 def display_plot(dataset, version):
     define_config()
@@ -199,7 +238,7 @@ def display_plot(dataset, version):
         print("Plot not found! Perhaps it hasn't made yet?")
         return False
     img = mpimg.imread(path)
-    plt.figure()
+    plt.figure(figsize=(24, 24))
     plt.title(os.path.basename(path))
     plt.imshow(img)
     return True
