@@ -6,6 +6,7 @@ import glob
 import torch
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import pandas as pd
 
 from apply import apply
 from cropping import crop
@@ -13,6 +14,7 @@ import image2npy
 from main import main
 import config
 from models import model_mappings
+from evaluate import evaluate
 
 import plotly.express as px
 import plotly.graph_objects as go
@@ -36,6 +38,12 @@ def run_apply(dataset, version, test_set, gpu=False):
     args = SimpleNamespace(dataset=dataset, version=version, test_set=test_set, gpu=gpu)
     define_config()
     apply(args)
+
+def run_evaluate(dataset, version, save=False, gpu=False, test_folder="test", overlay=False, neat=False):
+    torch.cuda.empty_cache()
+    args = SimpleNamespace(dataset=dataset, version=version, save=save, gpu=gpu, test_folder=test_folder, overlay=overlay, neat=neat)
+    define_config()
+    evaluate(args)
 
 def run_crop(dataset, pixel_num, train_num, val_num, rename=False):
     args = SimpleNamespace(dataset=dataset, pixel_num=pixel_num, train_num=train_num, val_num=val_num, rename=rename)
@@ -200,6 +208,27 @@ def display_overlays(dataset, version, test_folder='test', disp_all=False):
         print("Overlays not found! Perhaps they haven't made yet?")
         return False
     return display_images(directory_path, disp_all)
+
+def display_metrics(dataset, version, test_folder='test'):
+    define_config()
+    config_dict = config.config
+    try:
+        dataset_dict = config_dict[dataset]
+    except KeyError:
+        print('dataset %s does not exist' % dataset)
+        return False
+    try:
+        model = dataset_dict[version]
+    except KeyError:
+        print('version %s does not exist' % version)
+        return False
+    path = dataset_dict['default']['root'] + '/' + test_folder + '/predictions/' + version + '_' + model['model'] + '_Metrics.csv'
+    if not os.path.isfile(path):
+        print("Metrics not found! Perhaps they haven't been made yet?")
+        return False
+    metrics = pd.read_csv(path)
+    print(metrics)
+    return True
 
 def display_predictions(dataset, version, test_set, disp_all=False):
     define_config()

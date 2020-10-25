@@ -8,3 +8,5 @@ torchnet
 torchvision
 tqdm
 plotly
+numba
+pyprnt
