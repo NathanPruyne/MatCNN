@@ -227,8 +227,7 @@ def display_metrics(dataset, version, test_folder='test'):
         print("Metrics not found! Perhaps they haven't been made yet?")
         return False
     metrics = pd.read_csv(path)
-    print(metrics)
-    return True
+    return metrics
 
 def display_predictions(dataset, version, test_set, disp_all=False):
     define_config()
