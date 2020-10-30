@@ -209,7 +209,7 @@ def display_overlays(dataset, version, test_folder='test', disp_all=False):
         return False
     return display_images(directory_path, disp_all)
 
-def display_metrics(dataset, version, test_folder='test'):
+def display_metrics(dataset, version, test_folder='test', decimal_places=4):
     define_config()
     config_dict = config.config
     try:
@@ -227,6 +227,11 @@ def display_metrics(dataset, version, test_folder='test'):
         print("Metrics not found! Perhaps they haven't been made yet?")
         return False
     metrics = pd.read_csv(path)
+    metrics = metrics.rename(columns={"Unnamed: 0": "Image"})
+    mean = metrics.mean()
+    mean['Image'] = 'Average'
+    metrics = metrics.append(mean, ignore_index=True)
+    metrics = metrics.round(decimal_places)
     return metrics
 
 def display_predictions(dataset, version, test_set, disp_all=False):
