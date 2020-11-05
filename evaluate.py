@@ -137,8 +137,8 @@ class ConfusionMeter(meter.Meter):
 
 def bfscorecv(prediction, label, mask=False, threshold=2):
 
-    prediction = prediction[0].numpy()
-    label = label[0].numpy()
+    prediction = prediction[0].cpu().numpy()
+    label = label[0].cpu().numpy()
 
     # Apply a mask for images
     if isinstance(mask, np.ndarray):
