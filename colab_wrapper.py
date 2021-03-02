@@ -291,4 +291,4 @@ def show_versions(dataset):
         for key in table_relevant:
             if key not in dataset_dict[version].keys():
                 dataset_dict[version][key] = default_vals[key]
-    print(pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").to_string())
+    print(pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").sort_index().to_string())
