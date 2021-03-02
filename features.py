@@ -109,12 +109,13 @@ def plotting(record, config, start_time, total_time, directory, epoch):
     plt.subplot(211)
     plt.plot(epochs, record['acc_train'], 'bo-', label='Train Accuracy')
     plt.plot(epochs, record['acc_val'], 'ko--', label='Validate Accuracy')
-    plt.plot(epochs, record['class_precision'], 'co--', label='Class Accuracy')
+    plt.plot(epochs, record['class_precision'], 'co--', label='Dendrite Class Accuracy')
+    plt.plot(epochs, record['mean_iou'], 'mo--', label='Mean IoU')
     plt.xticks(np.arange(1, epoch+1, tick))
     plt.yticks(np.arange(0.0, 1.1, 0.2))
     plt.ylim(bottom=0.0, top=1.0)
     plt.xlabel('Epochs', fontsize=7)
-    plt.ylabel('Accuracy (%)', fontsize=7)
+    plt.ylabel('Score', fontsize=7)
     plt.legend(loc=4, facecolor='white')
 
     # Titles figure, which must occur before lower subplot so that it remains as the top of the figure.
@@ -124,8 +125,8 @@ def plotting(record, config, start_time, total_time, directory, epoch):
         'Neural Network Training Progress: %s (%s)' % (config['root'][7:], start_str),
         y=0.9, fontsize=12)
     text_str1 = '\n'.join([
-        'Training Accuracy:    %.4f' % max(record['acc_val']), '',
-        'Training Loss:    %.4f' % min(record['loss_val']), '',
+        'Validation Accuracy:    %.4f' % max(record['acc_val']), '',
+        'Validation Loss:    %.4f' % min(record['loss_val']), '',
         'Training Time:    %s' % time_str, '',
         'Mean IoU:    %.4f' % max(record['mean_iou']), '',
         'Class Accuracy:    %.4f' % max(record['class_precision']), '',
@@ -144,7 +145,7 @@ def plotting(record, config, start_time, total_time, directory, epoch):
 
     # Plots text boxes onto figure. The y-position of these boxes is hard-coded and subject
     # to change upon the addition of new metrics to display.
-    plt.text(epoch+shift, 0.9, 'Results:', figure=fig, weight='bold')
+    plt.text(epoch+shift, 0.9, 'Best CNN Metrics:', figure=fig, weight='bold')
     plt.text(epoch+shift, 0.175, text_str1, figure=fig)
     plt.text(epoch+shift, 0.125, 'Parameters:', figure=fig, weight='bold')
     plt.text(epoch+shift, -0.6, text_str2, figure=fig)
@@ -153,7 +154,6 @@ def plotting(record, config, start_time, total_time, directory, epoch):
     plt.subplot(212)
     plt.plot(epochs, record['loss_train'], 'ro-', label='Train Loss')
     plt.plot(epochs, record['loss_val'], 'ko--', label='Validate Loss')
-    plt.plot(epochs, record['mean_iou'], 'mo--', label='Mean IoU')
     plt.xticks(np.arange(1, epoch+1, tick))
     plt.yticks(np.arange(0.0, 1.1, 0.2))
     plt.ylim(bottom=0.0, top=1.0)
