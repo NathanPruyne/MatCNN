@@ -275,3 +275,21 @@ def display_plot(dataset, version):
     plt.title(os.path.basename(path))
     plt.imshow(img)
     return True
+
+table_relevant = ['model', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug']
+
+def show_versions(dataset):
+    define_config()
+    config_dict = config.config
+    try:
+        dataset_dict = config_dict[dataset]
+    except KeyError:
+        print('dataset %s does not exist' % dataset)
+        return False
+    default_vals = dataset_dict.pop('default')
+    for version in dataset_dict.keys():
+        for key in table_relevant:
+            if key not in dataset_dict[version].keys():
+                dataset_dict[version][key] = default_vals[key]
+    print(pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").to_string())
+    return True
