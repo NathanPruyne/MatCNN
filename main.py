@@ -29,7 +29,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from tqdm import tqdm
-import random
 import gc
 
 # MatSeg Script Imports
@@ -67,11 +66,11 @@ class Dataset(data.Dataset):
         with open(img_dir, 'rb') as f:
             img = Image.open(f)
             img = img.convert('RGB')
-            random.seed(seed)
+            torch.manual_seed(seed)
             img = self.transform_img(img)
         label = np.load(label_dir).astype(np.int16)
         label = Image.fromarray(label)
-        random.seed(seed)
+        torch.manual_seed(seed)
         label = self.transform_label(label).squeeze()
         return img, label, img_name
 
