@@ -99,23 +99,49 @@ def average(root_dir):
 def get_transform(config, is_train):
     mean, std, is_aug = average(config['root'])[0], average(config['root'])[1], config['aug']
 
+    transformation_directory = {
+        'rotation': T.RandomRotation(45),
+        'horizontal_flip': T.RandomHorizontalFlip(),
+        'vertical_flip': T.RandomVerticalFlip(),
+        'shear': T.RandomAffine(10, shear=30)
+    }
+    skip_label_transformation_directory = {
+         'gray_balance_adjust': T.ColorJitter(brightness=0.5, contrast=0.5),
+    }
+    transform_list = []
+    skip_label_transforms = []
+    if 'transforms' in config.keys():
+        transforms = config['transforms']
+    else:
+        transforms = ['rotation', 'horizontal_flip', 'vertical_flip']
+    for tf in transforms:
+        if tf in transformation_directory:
+            transform_list.append(transformation_directory[tf])
+        if tf in skip_label_transformation_directory:
+            skip_label_transforms.append(skip_label_transformation_directory[tf])
     # Augmentation only occurs during training and can be toggled in configuration
-    if is_train and is_aug:
+    if is_train and is_aug and transform_list:
+        augments = T.Compose(transform_list)
         transform_label = T.Compose([
-            T.RandomRotation(45),
-            T.RandomHorizontalFlip(),
-            T.RandomVerticalFlip(),
+            augments,
             T.ToTensor()
         ])
     else:
         transform_label = T.Compose([
             T.ToTensor()
         ])
-
-    transform_img = T.Compose([
-        transform_label,
-        T.Normalize(mean=mean, std=std)
-    ])
+    if skip_label_transforms:
+        augments = T.Compose(skip_label_transforms)
+        transform_img = T.Compose([
+            transform_label,
+            augments,
+            T.Normalize(mean=mean, std=std)
+        ])
+    else:
+        transform_img = T.Compose([
+            transform_label,
+            T.Normalize(mean=mean, std=std)
+        ])
     return transform_img, transform_label
 
 
