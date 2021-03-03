@@ -72,7 +72,7 @@ def add_dataset(dataset, n_class, size, batch_size=1, lr=1e-4, epoch=40):
     print("Added new dataset " + dataset)
     return True
 
-valid_config_settings = ['model', 'n_class', 'root', 'size', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug']
+valid_config_settings = ['model', 'n_class', 'root', 'size', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug', 'transforms']
 
 def add_version(dataset, version_num=None, **kwargs):
     define_config()
@@ -87,6 +87,9 @@ def add_version(dataset, version_num=None, **kwargs):
         if key == 'batch_size':
             if not warn_batch_size(kwargs['batch_size']):
                 return False
+        if key == 'transforms' and type(kwargs['transforms']) != list:
+            print("Transforms must be a list of transformations")
+            return False
         if key not in valid_config_settings:
             print("Invalid configuration setting: " + key)
             return False
@@ -276,7 +279,7 @@ def display_plot(dataset, version):
     plt.imshow(img)
     return True
 
-table_relevant = ['model', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug']
+table_relevant = ['model', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug', 'transforms']
 
 def show_versions(dataset):
     define_config()
@@ -289,6 +292,6 @@ def show_versions(dataset):
     default_vals = dataset_dict.pop('default')
     for version in dataset_dict.keys():
         for key in table_relevant:
-            if key not in dataset_dict[version].keys():
+            if key not in dataset_dict[version].keys() and key in default_vals.keys():
                 dataset_dict[version][key] = default_vals[key]
     print(pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").sort_index().to_string())
