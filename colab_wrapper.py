@@ -74,7 +74,7 @@ def add_dataset(dataset, n_class, size, batch_size=1, lr=1e-4, epoch=40):
 
 valid_config_settings = ['model', 'n_class', 'root', 'size', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug', 'transforms']
 
-def add_version(dataset, version_num=None, **kwargs):
+def add_version(dataset, version=None, **kwargs):
     define_config()
     config_dict = config.config
     is_model = False
@@ -101,22 +101,24 @@ def add_version(dataset, version_num=None, **kwargs):
     except KeyError:
         print('dataset %s does not exist' % dataset)
         return False
-    if not version_num:
+    if not version:
         next_num = 1
         while ('v' + str(next_num)) in dataset_dict.keys():
             next_num += 1
-        version_num = next_num
-    elif ('v' + str(version_num)) in dataset_dict.keys():
-        response = input("WARNING: This will overwrite " + dataset + " v" + str(version_num) + ", continue? ")
+        version = next_num
+    elif type(version) == int:
+        version = 'v' + str(version)
+    if version in dataset_dict.keys():
+        response = input("WARNING: This will overwrite " + dataset + " " + str(version) + ", continue? ")
         if not (response.lower() == 'yes' or response.lower() == 'ye' or response.lower() == 'y'):
             return False
-    dataset_dict['v' + str(version_num)] = kwargs
+    dataset_dict[str(version)] = kwargs
     save_config(config_dict)
-    print("Saved version v" + str(version_num) + " of dataset " + dataset)
+    print("Saved version " + str(version) + " of dataset " + dataset)
     return True
 
 
-def remove_version(dataset, version_num=None):
+def remove_version(dataset, version=None):
     define_config()
     config_dict = config.config
     try:
@@ -124,9 +126,11 @@ def remove_version(dataset, version_num=None):
     except KeyError:
         print('dataset %s does not exist' % dataset)
         return False
-    if version_num:
-        if ('v' + str(version_num)) not in dataset_dict.keys():
-            print ('version v' + str(version_num) + ' does not exist')
+    if version:
+        if type(version) == int:
+            version = 'v' + str(version)
+        if (str(version)) not in dataset_dict.keys():
+            print ('version ' + str(version) + ' does not exist')
             return False
     else:
         versions = []
@@ -137,13 +141,13 @@ def remove_version(dataset, version_num=None):
                 except ValueError:
                     pass
         versions.sort()
-        version_num = versions[-1]
-    response = input("Continue deleting " + dataset + " v" + str(version_num) + "? ")
+        version = versions[-1]
+    response = input("Continue deleting " + dataset + " " + str(version) + "? ")
     if not (response.lower() == 'yes' or response.lower() == 'ye' or response.lower() == 'y'):
         return False
-    dataset_dict.pop('v' + str(version_num))
+    dataset_dict.pop(str(version))
     save_config(config_dict)
-    print("Deleted version v" + str(version_num) + " of dataset " + dataset)
+    print("Deleted version " + str(version) + " of dataset " + dataset)
     return True
 
 def display_images(folder, disp_all):
