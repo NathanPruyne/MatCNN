@@ -141,7 +141,7 @@ def remove_version(dataset, version=None):
                 except ValueError:
                     pass
         versions.sort()
-        version = versions[-1]
+        version = 'v' + str(versions[-1])
     response = input("Continue deleting " + dataset + " " + str(version) + "? ")
     if not (response.lower() == 'yes' or response.lower() == 'ye' or response.lower() == 'y'):
         return False
