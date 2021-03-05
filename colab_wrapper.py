@@ -106,7 +106,7 @@ def add_version(dataset, version=None, **kwargs):
         while ('v' + str(next_num)) in dataset_dict.keys():
             next_num += 1
         version = next_num
-    elif type(version) == int:
+    if type(version) == int:
         version = 'v' + str(version)
     if version in dataset_dict.keys():
         response = input("WARNING: This will overwrite " + dataset + " " + str(version) + ", continue? ")
