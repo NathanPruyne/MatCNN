@@ -285,7 +285,7 @@ def display_plot(dataset, version):
 
 table_relevant = ['model', 'batch_size', 'shuffle', 'balance', 'optimizer', 'lr', 'patience', 'epoch', 'aug', 'transforms']
 
-def show_versions(dataset):
+def show_versions(dataset, printout=True):
     define_config()
     config_dict = config.config
     try:
@@ -298,4 +298,22 @@ def show_versions(dataset):
         for key in table_relevant:
             if key not in dataset_dict[version].keys() and key in default_vals.keys():
                 dataset_dict[version][key] = default_vals[key]
-    print(pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").sort_index().to_string())
+    result = pd.DataFrame.from_dict(dataset_dict, orient='index').fillna("").sort_index().to_string()
+    if printout:
+        print(result)
+        return
+    else:
+        return result
+
+def save_versions(dataset, file_name=None):
+    text = show_versions(dataset, printout=False)
+    if not text:
+        return False
+    if not os.path.isdir('versions'):
+        os.mkdir('versions')
+    if file_name == None:
+        file_name = dataset + '.txt'
+    with open(os.path.join('versions', file_name), 'w') as fp:
+        fp.write(text)
+    print ("Versions in dataset " + dataset + " saved in " + os.path.join('versions', file_name))
+    return True

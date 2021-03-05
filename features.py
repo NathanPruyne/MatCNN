@@ -109,7 +109,7 @@ def plotting(record, config, start_time, total_time, directory, epoch):
     plt.subplot(211)
     plt.plot(epochs, record['acc_train'], 'bo-', label='Train Accuracy')
     plt.plot(epochs, record['acc_val'], 'ko--', label='Validate Accuracy')
-    plt.plot(epochs, record['class_precision'], 'co--', label='Dendrite Class Accuracy')
+    plt.plot(epochs, record['class_precision'], 'co--', label='Class 1 Accuracy')
     plt.plot(epochs, record['mean_iou'], 'mo--', label='Mean IoU')
     plt.xticks(np.arange(1, epoch+1, tick))
     plt.yticks(np.arange(0.0, 1.1, 0.2))
@@ -129,8 +129,8 @@ def plotting(record, config, start_time, total_time, directory, epoch):
         'Validation Loss:    %.4f' % min(record['loss_val']), '',
         'Training Time:    %s' % time_str, '',
         'Mean IoU:    %.4f' % max(record['mean_iou']), '',
-        'Class Accuracy:    %.4f' % max(record['class_precision']), '',
-        'Class IoU:    %.4f' % max(record['class_iou']),
+        'Class 1 Accuracy:    %.4f' % max(record['class_precision']), '',
+        'Class 1 IoU:    %.4f' % max(record['class_iou']),
         '', ''
     ])
     text_str2 = '\n'.join([
