@@ -115,6 +115,7 @@ def add_version(dataset, version=None, **kwargs):
     dataset_dict[str(version)] = kwargs
     save_config(config_dict)
     print("Saved version " + str(version) + " of dataset " + dataset)
+    save_versions(dataset)
     return True
 
 
@@ -312,7 +313,7 @@ def save_versions(dataset, file_name=None):
     if not os.path.isdir('versions'):
         os.mkdir('versions')
     if file_name == None:
-        file_name = dataset + '.txt'
+        file_name = dataset + '_versions.txt'
     with open(os.path.join('versions', file_name), 'w') as fp:
         fp.write(text)
     print ("Versions in dataset " + dataset + " saved in " + os.path.join('versions', file_name))

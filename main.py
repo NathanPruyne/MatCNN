@@ -108,7 +108,7 @@ def train(config, model, criterion, optimizer, train_loader, method, gpu):
     print('learning rate =', optimizer.param_groups[0]['lr'])
 
     # Enumerating the training loader through tqdm creates the progress bar
-    for t, (inputs, labels, _) in enumerate(tqdm(train_loader)):
+    for t, (inputs, labels, _) in enumerate(tqdm(train_loader, file=sys.stdout)):
         if gpu and torch.cuda.is_available():
             inputs, labels = inputs.cuda(), labels.cuda().long()
         else:
@@ -150,7 +150,7 @@ def evaluate(config, model, criterion, validation_loader, method, gpu, test_flag
         # Setting model to eval turns off dropout and batch normalization which would
         # obscure the results of testing
         model.eval()
-        for t, (inputs, labels, names) in enumerate(tqdm(validation_loader)):
+        for t, (inputs, labels, names) in enumerate(tqdm(validation_loader, file=sys.stdout)):
             if gpu and torch.cuda.is_available():
                 inputs, labels = inputs.cuda(), labels.cuda().long()
             else:

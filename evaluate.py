@@ -536,6 +536,8 @@ def evaluate(args):
         print('\n')
         if args.neat:
             from pyprnt import prnt
+            for key, value in metrics_tot.items():
+                metrics_tot[key] = round(value, 4)
             prnt(metrics_tot,'\n')
         else:
             print(metrics_tot,'\n')
