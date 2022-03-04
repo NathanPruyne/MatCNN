@@ -159,6 +159,8 @@ def display_images(folder, disp_all):
     figs = []
     for image_file in imgs:
         img = mpimg.imread(image_file)
+        if img.shape[2] == 4:
+            img = img[:, :, 0:3]
         figs.append(px.imshow(img, title=os.path.basename(image_file)))
     if disp_all:
         for fig in figs:
